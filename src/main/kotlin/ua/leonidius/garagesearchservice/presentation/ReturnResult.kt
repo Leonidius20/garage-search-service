@@ -1,0 +1,3 @@
+package ua.leonidius.garagesearchservice.presentation
+
+interface ReturnResult
