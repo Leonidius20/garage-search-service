@@ -3,31 +3,33 @@ package ua.leonidius.garagesearchservice.presentation
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import ua.leonidius.garagesearchservice.service.*
-import kotlin.math.max
+import ua.leonidius.garagesearchservice.service.SearchFacade
+import ua.leonidius.garagesearchservice.service.specifications.Specification
+import ua.leonidius.garagesearchservice.service.specifications.TrueSpecification
+import ua.leonidius.garagesearchservice.service.specifications.сoncrete.ManufacturerSpecification
+import ua.leonidius.garagesearchservice.service.specifications.сoncrete.MaxPriceSpecification
 
 @RestController
-class SearchPresenter(private val searchHandler: SearchHandler) {
+class SearchPresenter(private val searchFacade: SearchFacade) {
 
     @GetMapping("/details/search")
     fun findDetail(@RequestParam query: String,
-                   @RequestParam(required = false) maxPrice: Double?): ReturnResult {
+                   @RequestParam(required = false) maxPrice: Double?,
+                   @RequestParam(required = false) minPrice: Double?,
+                   @RequestParam(required = false) manufacturer: String?): ReturnResult {
         try {
-            val notEmptyValidator = NotEmptyValidator()
-            val minLengthValidator = MinLengthValidator(3)
-            val illegalCharsValidator = IllegalCharsValidator()
+            var filter: Specification<CarDetailReturnResult> = TrueSpecification()
 
-            notEmptyValidator.setNext(minLengthValidator)
-            minLengthValidator.setNext(illegalCharsValidator)
-            illegalCharsValidator.setNext(searchHandler)
+            if (maxPrice != null)
+                filter = filter.and(MaxPriceSpecification(maxPrice))
 
-            if (maxPrice != null) {
-                val priceFilter = PriceFilter(maxPrice)
-                searchHandler.setNext(priceFilter)
-            }
+            if (minPrice != null)
+                filter = filter.and(MaxPriceSpecification(minPrice).not())
 
-            return notEmptyValidator.handleSearchQuery(query,
-                emptyList<CarDetailReturnResult>().toMutableList())
+            if (manufacturer != null)
+                filter = filter.and(ManufacturerSpecification(manufacturer))
+
+            return searchFacade.findDetailsByNameWithFilter(query, filter)
         } catch (e: Exception) {
             e.printStackTrace()
             return ErrorReturnResult(e.message!!)

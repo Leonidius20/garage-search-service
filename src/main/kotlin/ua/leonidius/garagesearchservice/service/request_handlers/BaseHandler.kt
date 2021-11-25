@@ -1,4 +1,4 @@
-package ua.leonidius.garagesearchservice.service
+package ua.leonidius.garagesearchservice.service.request_handlers
 
 abstract class BaseHandler: RequestHandler {
 

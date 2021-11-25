@@ -1,7 +1,7 @@
 package ua.leonidius.garagesearchservice.presentation
 
 data class SearchReturnResult(
-    val results: List<CarDetailReturnResult>,
+    val results: MutableList<CarDetailReturnResult>,
 ): ReturnResult
 
 data class CarDetailReturnResult(
@@ -9,4 +9,5 @@ data class CarDetailReturnResult(
     val price: Double,
     val name: String,
     val description: String,
+    val manufacturer: String,
 )
