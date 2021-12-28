@@ -9,4 +9,6 @@ interface SearchFacade {
     fun findDetailsByNameWithFilter(
         name: String, filter: Specification<CarDetailReturnResult>): SearchReturnResult
 
+
+    fun getDetailsPaged(page: Int): SearchReturnResult
 }

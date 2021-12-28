@@ -1,6 +1,7 @@
 package ua.leonidius.garagesearchservice.service
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import ua.leonidius.garagesearchservice.data.CarDetailRepository
 import ua.leonidius.garagesearchservice.presentation.CarDetailReturnResult
@@ -34,5 +35,16 @@ class SearchFacadeImpl: SearchFacade {
         results.results.retainAll { filter.isSatisfiedBy(it) }
         return results
     }
+
+    override fun getDetailsPaged(page: Int): SearchReturnResult {
+        val results = mutableListOf<CarDetailReturnResult>()
+
+        results.addAll(repository.findAll(PageRequest.of(page, 5000)).map {
+            CarDetailReturnResult(it.id!!, it.price, it.name, it.description, it.manufacturer)
+        })
+
+        return SearchReturnResult(results.toMutableList())
+    }
+
 
 }

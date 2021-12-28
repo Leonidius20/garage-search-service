@@ -12,28 +12,11 @@ import ua.leonidius.garagesearchservice.service.specifications.сoncrete.MaxPric
 @RestController
 class SearchPresenter(private val searchFacade: SearchFacade) {
 
-    @GetMapping("/details/search")
-    fun findDetail(@RequestParam query: String,
-                   @RequestParam(required = false) maxPrice: Double?,
-                   @RequestParam(required = false) minPrice: Double?,
-                   @RequestParam(required = false) manufacturer: String?): ReturnResult {
-        try {
-            var filter: Specification<CarDetailReturnResult> = TrueSpecification()
+    // maybe get 1 detial by ID From cache
 
-            if (maxPrice != null)
-                filter = filter.and(MaxPriceSpecification(maxPrice))
-
-            if (minPrice != null)
-                filter = filter.and(MaxPriceSpecification(minPrice).not())
-
-            if (manufacturer != null)
-                filter = filter.and(ManufacturerSpecification(manufacturer))
-
-            return searchFacade.findDetailsByNameWithFilter(query, filter)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return ErrorReturnResult(e.message!!)
-        }
+    @GetMapping("/details")
+    fun get5000Details(@RequestParam page: Int): SearchReturnResult {
+        return searchFacade.getDetailsPaged(page)
     }
 
 }

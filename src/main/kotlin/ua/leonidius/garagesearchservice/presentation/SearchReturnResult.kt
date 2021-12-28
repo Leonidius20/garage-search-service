@@ -8,6 +8,6 @@ data class CarDetailReturnResult(
     val id: Int,
     val price: Double,
     val name: String,
-    val description: String,
+    val description: String?,
     val manufacturer: String,
 )
