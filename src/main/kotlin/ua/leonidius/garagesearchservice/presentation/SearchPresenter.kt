@@ -19,4 +19,9 @@ class SearchPresenter(private val searchFacade: SearchFacade) {
         return searchFacade.getDetailsPaged(page)
     }
 
+    @GetMapping("/num-pages")
+    fun getNumberOfPages(): Long {
+        return searchFacade.getNumberOfPages()
+    }
+
 }

@@ -46,5 +46,9 @@ class SearchFacadeImpl: SearchFacade {
         return SearchReturnResult(results.toMutableList())
     }
 
+    override fun getNumberOfPages(): Long {
+        return repository.count() / 5000
+    }
+
 
 }
