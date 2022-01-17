@@ -10,6 +10,8 @@ import ua.leonidius.garagesearchservice.service.specifications.Specification
 import ua.leonidius.garagesearchservice.service.specifications.TrueSpecification
 import ua.leonidius.garagesearchservice.service.specifications.сoncrete.ManufacturerSpecification
 import ua.leonidius.garagesearchservice.service.specifications.сoncrete.MaxPriceSpecification
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 @RestController
 class SearchPresenter(private val searchFacade: SearchFacade) {
@@ -40,7 +42,13 @@ class SearchPresenter(private val searchFacade: SearchFacade) {
         @RequestParam(required = false) type: String?,
         @RequestParam(required = false) price: Float?
     ): CarDetailReturnResult? {
-        return searchFacade.modifyDetail(id, name, manufacturer, description, type, price)
+
+        return searchFacade.modifyDetail(id,
+            if (name != null) URLDecoder.decode(name, StandardCharsets.UTF_8.toString()) else null,
+            if (manufacturer != null) URLDecoder.decode(manufacturer, StandardCharsets.UTF_8.toString()) else null,
+            if (description != null) URLDecoder.decode(description, StandardCharsets.UTF_8.toString()) else null,
+            if (type != null) URLDecoder.decode(type, StandardCharsets.UTF_8.toString()) else null,
+            price)
     }
 
 }
