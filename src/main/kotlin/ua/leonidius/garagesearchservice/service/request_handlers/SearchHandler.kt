@@ -8,7 +8,7 @@ class SearchHandler(private val repository: CarDetailRepository): BaseHandler() 
 
     override fun handleSearchQuery(query: String): SearchReturnResult {
         val resultSet = repository.findByNameContainingIgnoreCase(query).map {
-            CarDetailReturnResult(it.id!!, it.price, it.name, it.description, it.manufacturer)
+            CarDetailReturnResult(it.id!!, it.price, it.name, it.description, it.manufacturer, it.detailTypeCustomName)
         }.toMutableList()
         return getNext()?.handleSearchQuery(query) ?: SearchReturnResult(resultSet)
     }

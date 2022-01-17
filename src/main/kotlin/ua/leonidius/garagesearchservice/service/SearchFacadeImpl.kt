@@ -40,7 +40,7 @@ class SearchFacadeImpl: SearchFacade {
         val results = mutableListOf<CarDetailReturnResult>()
 
         results.addAll(repository.findAll(PageRequest.of(page, 5000)).map {
-            CarDetailReturnResult(it.id!!, it.price, it.name, it.description, it.manufacturer)
+            CarDetailReturnResult(it.id!!, it.price, it.name, it.description, it.manufacturer, it.detailTypeCustomName)
         })
 
         return SearchReturnResult(results.toMutableList())
@@ -48,6 +48,34 @@ class SearchFacadeImpl: SearchFacade {
 
     override fun getNumberOfPages(): Long {
         return repository.count() / 5000
+    }
+
+    override fun deleteDetail(id: Int): Boolean {
+        if (id < 0) return false
+        if (!repository.existsById(id)) return false
+        repository.deleteById(id)
+        return true
+    }
+
+    override fun modifyDetail(id: Int, name: String?,
+                     manufacturer: String?,
+                     description: String?,
+                     type: String?,
+                     price: Float?): CarDetailReturnResult? {
+        if (id < 0) return null
+        if (!repository.existsById(id)) return null
+        if (price != null && price < 0) return null
+        val detail = repository.findById(id).get()
+
+        if (name != null) detail.name = name
+        if (manufacturer != null) detail.manufacturer = manufacturer
+        if (description != null) detail.description = description
+        if (type != null) detail.detailTypeCustomName = type
+        if (price != null) detail.price = price.toDouble()
+
+        return repository.save(detail).let {
+            CarDetailReturnResult(it.id!!, it.price, it.name, it.description, it.manufacturer, it.detailTypeCustomName)
+        }
     }
 
 

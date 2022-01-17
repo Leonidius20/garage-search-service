@@ -10,4 +10,5 @@ data class CarDetailReturnResult(
     val name: String,
     val description: String?,
     val manufacturer: String,
+    val type: String?,
 )
